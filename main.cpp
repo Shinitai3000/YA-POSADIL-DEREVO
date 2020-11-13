@@ -11,7 +11,6 @@ using namespace std;
     Value value;
     bool colour;
     int height;
-    // Инициализация
     Node(Value v, Key k){
         parent = nullptr;
         left = nullptr;
@@ -22,7 +21,6 @@ using namespace std;
         height = 1;
     }
 
-    // Вычисляем баланс-фактор
     int getBalance(Node *N){
         if (N == NULL){
             return 0;
@@ -102,28 +100,32 @@ private:
                 if(find(key, val, now)!= nullptr){
                     // node with only one child or no child
                     if (now->left == nullptr) {
-                        Node* temp = now->right;
-                        Node* par = now->parent;
+                        //Node* temp = now->right;
+                        //Node* par = now->parent;
                         if(now->key > (now->parent)->key){
+                            //par->right = temp;
+                            now->parent->right = now->right;
                             delete now;
-                            par->right = temp;
                         }
                         else{
+                            //par->left = temp;
+                            now->parent->left = now->right;
                             delete now;
-                            par->left = temp;
+
                         }
 
                     }
                     else if (now->right == nullptr) {
-                        Node* temp = now->left;
-                        Node* par = now->parent;
+                        //Node* temp = now->left;
+                        //Node* par = now->parent;
                         if(now->key > (now->parent)->key){
+                            //par->right = temp;
+                            now->parent->right = now->left;
                             delete now;
-                            par->right = temp;
                         }
                         else{
+                            now->parent->left = now->left;
                             delete now;
-                            par->left = temp;
                         }
                     }
                     else if ((now->right != nullptr ) && now->left != nullptr){
@@ -133,15 +135,17 @@ private:
                         Node* NOW;
                         NOW = now->right;
                         delete now;
+                        //Находит наименьший элемент в правом поддереве - NOW
                         while(NOW->left != nullptr){
                             NOW = NOW->left;
                         }
+                        // родитель NOW становится родителем его правого сына
                         NOW->right->parent = NOW->parent;
                         NOW->parent->left= NOW->right;
+                        // А сам он становится на место удаленного звена
                         NOW->left = templ;
                         NOW->parent = par;
                         NOW->right = tempr;
-
 
                     }
 
