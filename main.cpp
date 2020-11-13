@@ -35,14 +35,17 @@ using namespace std;
 };
 
 
-template<typename Key, typename Value>
+template<typename Key, typename Value, typename Node = Node<Key, Value>>
 class BinTree{
-public:
+private:
     Node* root;
-    BinTree(Node* N){
-        root = N;
-    }
     bool first_put = 1;
+
+    BinTree(Key key, Value val){
+        root->key = key;
+        root->value = val;
+    }
+
     void insert(Key key, Value val, Node* now){
         // dead end
         if(first_put == 1){
@@ -58,19 +61,21 @@ public:
             left->key = key;
             return;
         }
-        if((right == nullptr) && (val > value)){
-            right = new Bin;
-            right->parent = this;
+        if((right == nullptr) && (key > now->key)){
+            auto right = new Node();
+            right->parent = now;
             right->value = val;
+            right->key = key;
             return;
         }
         // base case
-        if ((val < value) & (left != nullptr)){
-            left->insert(val);
+        if ((key < now->key) & (now->left != nullptr)){
+            (now->left)->insert(val);
         }else{
-            right->insert(val);
+            (now->right)->insert(val);
         }
     }
+
     Node* find(Key key, Value val, Node* now){
                 if ((key == now->key) && (val == now->value)) {
                     return now;
@@ -92,6 +97,7 @@ public:
                     }
                 }
     }
+
     void Delete(Key key, Value val, Node* now){
                 if(find(key, val, now)!= nullptr){
                     // node with only one child or no child
@@ -119,6 +125,7 @@ public:
                             delete now;
                             par->left = temp;
                         }
+                    }
                     else if ((now->right != nullptr ) && now->left != nullptr){
                         Node* templ = now->left;
                         Node* par = now->parent;
@@ -141,7 +148,7 @@ public:
 
                     }
     }
-}
+};
 
 
     void print(){
