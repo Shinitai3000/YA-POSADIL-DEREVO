@@ -28,20 +28,19 @@ using namespace std;
             return height(N->left) - height(N->right);
         }
     }
-    Node* getGrandDad(Node* N){
-        if ((N != nullptr) && (N->parent != nullptr)){
-            return (N->parent)->parent;
+    Node* getGrandDad(){
+        if ((this != nullptr) && (this->parent != nullptr)){
+            return (this->parent)->parent;
         }
         else{
             return nullptr;
         }
     }
-
-    Node* getUncle(Node* N){
-        Node* GD = getGrandDad(N);
+    Node* getUncle(){
+        Node* GD = this->getGrandDad();
         if (GD == nullptr)
             return nullptr; // No grandparent means no uncle
-        if (N->parent == GD->left)
+        if (this->parent == GD->left)
             return GD->right;
         else
             return GD->left;
@@ -56,8 +55,9 @@ using namespace std;
 
 template<typename Key, typename Value, typename Node = Node<Key, Value>>
 class BinTree{
-private:
+public:
     Node* root;
+private:
     bool first_put = 1;
 
     void rotate_left(Node *N){
