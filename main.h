@@ -60,11 +60,6 @@ private:
     Node* root;
     bool first_put = 1;
 
-    BinTree(Key key, Value val){
-        root->key = key;
-        root->value = val;
-    }
-
     void rotate_left(Node *N){
         Node* pivot = N->right;
 
@@ -107,30 +102,27 @@ private:
         pivot->right = N;
     }
 
-
-
-
-    void insert(Key key, Value val, Node* now){
+    Node* yet_not_insert(Key key, Value val, Node* now){ //recursive support function
         // dead end
         if(first_put == 1){
-            now->value = val;
-            now->key = key;
+            root->value = val;
+            root->key = key;
             first_put = 0;
-            return;
+            return root;
         }
         if((now->left == nullptr) && (now->key > key)){
             auto left = new Node();
             left->parent = now;
             left->value = val;
             left->key = key;
-            return;
+            return left;
         }
         if((right == nullptr) && (key > now->key)){
             auto right = new Node();
             right->parent = now;
             right->value = val;
             right->key = key;
-            return;
+            return right;
         }
         // base case
         if ((key < now->key) & (now->left != nullptr)){
@@ -140,7 +132,11 @@ private:
         }
     }
 
-    Node* find(Key key, Value val, Node* now){
+    Node* insert(Key key, Value val){
+        return yet_not_insert(key, val, root);
+    }
+
+    Node* yet_not_find(Key key, Value val, Node* now){
                 if ((key == now->key) && (val == now->value)) {
                     return now;
                 }
@@ -162,16 +158,20 @@ private:
                 }
     }
 
+    Node* find(Key key, Value val, Node* now){
+        return yet_not_find(key, val, root);
+    }
+
     void Delete(Key key, Value val, Node* now){
                 if(find(key, val, now)!= nullptr){
                     // node with only one child or no child
                     if (now->left == nullptr) {
                         if(now->key > (now->parent)->key){
-                            now->parent->right = now->right;
+                            (now->parent)->right = now->right;
                             delete now;
                         }
                         else{
-                            now->parent->left = now->right;
+                            (now->parent)->left = now->right;
                             delete now;
 
                         }
