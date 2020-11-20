@@ -30,6 +30,10 @@ using namespace std;
         }
     }
 
+    void print(){
+        cout << value<<' ';
+    }
+
 };
 
 
@@ -131,37 +135,22 @@ private:
                     else if ((now->right != nullptr ) && now->left != nullptr){
                         Node* templ = now->left;
                         Node* par = now->parent;
-                        Node* tepmr = now->right;
+                        Node* tempr = now->right;
                         Node* NOW;
                         NOW = now->right;
                         delete now;
-                        //Íàõîäèò íàèìåíüøèé ýëåìåíò â ïðàâîì ïîääåðåâå - NOW
+                        //„N„p„‡„€„t„y„„ „~„p„y„}„u„~„Ž„Š„y„z „„|„u„}„u„~„„ „r „„‚„p„r„€„} „„€„t„t„u„‚„u„r„u - NOW
                         while(NOW->left != nullptr){
                             NOW = NOW->left;
                         }
-                        // ðîäèòåëü NOW ñòàíîâèòñÿ ðîäèòåëåì åãî ïðàâîãî ñûíà
+                        // „‚„€„t„y„„„u„|„Ž NOW „ƒ„„„p„~„€„r„y„„„ƒ„‘ „‚„€„t„y„„„u„|„u„} „u„s„€ „„‚„p„r„€„s„€ „ƒ„„~„p
                         NOW->right->parent = NOW->parent;
                         NOW->parent->left= NOW->right;
-                        // À ñàì îí ñòàíîâèòñÿ íà ìåñòî óäàëåííîãî çâåíà
+                        // „@ „ƒ„p„} „€„~ „ƒ„„„p„~„€„r„y„„„ƒ„‘ „~„p „}„u„ƒ„„„€ „…„t„p„|„u„~„~„€„s„€ „x„r„u„~„p
                         NOW->left = templ;
                         NOW->parent = par;
                         NOW->right = tempr;
-
                     }
-
-
-                    }
+                }
     }
 };
-
-
-    void print(){
-        cout << value<<' ';
-    }
-};
-
-
-int main(){
-
-return 0;
-}
