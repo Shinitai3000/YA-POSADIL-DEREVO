@@ -1,5 +1,4 @@
 #include<iostream>
-#include<queue>
 using namespace std;
 
  template<typename Key, typename Value>
@@ -21,13 +20,31 @@ using namespace std;
         height = 1;
     }
 
-    int getBalance(Node *N){
-        if (N == NULL){
+    int getBalance(Node* N){
+        if (N == nullptr){
             return 0;
         }
         else{
             return height(N->left) - height(N->right);
         }
+    }
+    Node* getGrandDad(Node* N){
+        if ((N != nullptr) && (N->parent != nullptr)){
+            return (N->parent)->parent;
+        }
+        else{
+            return nullptr;
+        }
+    }
+
+    Node* getUncle(Node* N){
+        Node* GD = getGrandDad(N);
+        if (GD == nullptr)
+            return nullptr; // No grandparent means no uncle
+        if (N->parent == GD->left)
+            return GD->right;
+        else
+            return GD->left;
     }
 
     void print(){
@@ -47,6 +64,51 @@ private:
         root->key = key;
         root->value = val;
     }
+
+    void rotate_left(Node *N){
+        Node* pivot = N->right;
+
+        pivot->parent = N->parent; //  G->N->pivot changed into G->pivot
+        if (N->parent != nullptr){ //check N was not root
+            if ((N->parent)->left == N){ // if N was left child
+                (N->parent)->left = pivot;// pivot become left child instead of N
+            }
+            else{
+                (N->parent)->right = pivot; // same
+            }
+        }
+
+        N->right = pivot->left; // pl<-pivot->pr changed into N->pl
+        if (pivot->left != nullptr){
+            (pivot->left)->parent = N; // N is parent for pl
+        }
+        N->parent = pivot;
+        pivot->left = N;
+}
+
+    void rotate_right(Node* N){
+        Node* pivot = N->left;
+
+        pivot->parent = N->parent;
+        if (N->parent != nullptr){
+            if ((N->parent)->left == N){
+                (N->parent)->left = pivot;
+            }
+            else{
+                (N->parent)->right = pivot;
+            }
+        }
+
+        N->left = pivot->right;
+        if (pivot->right != nullptr){
+            (pivot->right)->parent = N;
+        }
+        N->parent = pivot;
+        pivot->right = N;
+    }
+
+
+
 
     void insert(Key key, Value val, Node* now){
         // dead end
@@ -104,15 +166,11 @@ private:
                 if(find(key, val, now)!= nullptr){
                     // node with only one child or no child
                     if (now->left == nullptr) {
-                        //Node* temp = now->right;
-                        //Node* par = now->parent;
                         if(now->key > (now->parent)->key){
-                            //par->right = temp;
                             now->parent->right = now->right;
                             delete now;
                         }
                         else{
-                            //par->left = temp;
                             now->parent->left = now->right;
                             delete now;
 
@@ -120,10 +178,7 @@ private:
 
                     }
                     else if (now->right == nullptr) {
-                        //Node* temp = now->left;
-                        //Node* par = now->parent;
                         if(now->key > (now->parent)->key){
-                            //par->right = temp;
                             now->parent->right = now->left;
                             delete now;
                         }
@@ -139,14 +194,14 @@ private:
                         Node* NOW;
                         NOW = now->right;
                         delete now;
-                        //„N„p„‡„€„t„y„„ „~„p„y„}„u„~„Ž„Š„y„z „„|„u„}„u„~„„ „r „„‚„p„r„€„} „„€„t„t„u„‚„u„r„u - NOW
+                        //find the less (NOW) in right tree
                         while(NOW->left != nullptr){
                             NOW = NOW->left;
                         }
-                        // „‚„€„t„y„„„u„|„Ž NOW „ƒ„„„p„~„€„r„y„„„ƒ„‘ „‚„€„t„y„„„u„|„u„} „u„s„€ „„‚„p„r„€„s„€ „ƒ„„~„p
+                        //Now's parent become Now's right son's parent
                         NOW->right->parent = NOW->parent;
                         NOW->parent->left= NOW->right;
-                        // „@ „ƒ„p„} „€„~ „ƒ„„„p„~„€„r„y„„„ƒ„‘ „~„p „}„u„ƒ„„„€ „…„t„p„|„u„~„~„€„s„€ „x„r„u„~„p
+                        // Go to deleted place
                         NOW->left = templ;
                         NOW->parent = par;
                         NOW->right = tempr;
