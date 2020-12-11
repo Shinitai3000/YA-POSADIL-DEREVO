@@ -162,50 +162,61 @@ private:
         return yet_not_find(key, val, root);
     }
 
-    void Delete(Key key, Value val, Node* now){
-                if(find(key, val, now)!= nullptr){
-                    // node with only one child or no child
-                    if (now->left == nullptr) {
-                        if(now->key > (now->parent)->key){
-                            (now->parent)->right = now->right;
-                            delete now;
-                        }
-                        else{
-                            (now->parent)->left = now->right;
-                            delete now;
+   Node * minValueNode(Node* node)
+   {
+    Node* current = node;
 
-                        }
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL)
+    current = current->left;
 
-                    }
-                    else if (now->right == nullptr) {
-                        if(now->key > (now->parent)->key){
-                            now->parent->right = now->left;
-                            delete now;
-                        }
-                        else{
-                            now->parent->left = now->left;
-                            delete now;
-                        }
-                    }
-                    else if ((now->right != nullptr ) && now->left != nullptr){
-                        Node* templ = now->left;
-                        Node* par = now->parent;
-                        Node* tempr = now->right;
-                        Node* NOW;
-                        NOW = now->right;
-                        delete now;
-                        //find the less (NOW) in right tree
-                        while(NOW->left != nullptr){
-                            NOW = NOW->left;
-                        }
-                        //Now's parent become Now's right son's parent
-                        NOW->right->parent = NOW->parent;
-                        NOW->parent->left= NOW->right;
-                        // Go to deleted place
-                        NOW->left = templ;
-                        NOW->parent = par;
-                        NOW->right = tempr;
-                    }
-                }
+    return current;
+    }
+
+    Node* deleteNode(Node* root, Key key, Value val)
+    {
+        if (root == NULL){
+            return root;
+        }
+        if ( key < root->key ){
+            root->left = deleteNode(root->left, key, val);
+        }
+        else if( key > root->key ){
+            root->right = deleteNode(root->right, key, val);
+        }
+        else
+        {
+            //„N„u„„ „{„p„{„€„s„€-„„„€ „y„x „t„u„„„u„z
+            if( (root->left == NULL) || (root->right == NULL) )
+            {
+                Node *temp = root->left ?
+                root->left :
+                root->right;
+
+            //„N„u„„ „t„u„„„u„z
+            if (temp == NULL)
+            {
+                temp = root;
+                root = NULL;
+            }
+            else // „O„t„~„€ „t„y„„„u
+                *root = *temp;
+                free(temp);
+            }
+            else
+            {
+                //„I„‹„u„} „}„y„~„y„}„p„|„Ž„~„€„s„€ „r „„‚„p„r„€„} „„€„t„t„u„‚„u„r„u;
+                Node* temp = minValueNode(root->right);
+                root->key = temp->key;
+                root->right = deleteNode(root->right,temp->key, team->val);
+            }
+        }
+        if (root == NULL){
+            return root;
+        }
+        //„}„u„~„‘„u„} „r„„ƒ„€„„„
+        root->height = 1 + max(height(root->left),
+        height(root->right));
+        return root;
     }
 };

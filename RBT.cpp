@@ -6,7 +6,7 @@ class RBT : public BinTree<Key, Value, Node>{
     ~RBT(){
         destroy(this->root);
     }
-    //
+    //to prevent leak of memory
     void destroy(Node* N){
         if(N->left != nullptr){
             destroy(N->left);
