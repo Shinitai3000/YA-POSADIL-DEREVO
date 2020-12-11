@@ -40,7 +40,8 @@ class AVL_Tree : public BinTree{
         }
 
         // ‘ункци€ балансировки после вставки узла в дерево. ¬ставить вот сразу после вставки в обычным бин.дереве
-        void insert_balance(Node* now){
+        void balanced_insert(Key key,Value val){
+            Node* now = insert(key, val);
             // вычисл€ем длину нашего узла
             now->height = 1 + max(height(now->left),height(now->right));
             // и баланс фактор
@@ -69,6 +70,36 @@ class AVL_Tree : public BinTree{
             }
         }
 
+
+
+        void delete(Node* root, Key key, Value val){
+            delete(root, key, val);
+            //ѕеребалансируем
+            int balance = getBalance(root);
+            // Left Left Case
+            if (balance > 1 && getBalance(root->left) >= 0)
+                {return rightRotate(root);}
+
+            // Left Right Case
+            if (balance > 1 && getBalance(root->left) < 0)
+            {
+                root->left = leftRotate(root->left);
+                return rightRotate(root);
+            }
+
+            // Right Right Case
+            if (balance < -1 && getBalance(root->right) <= 0){
+                return leftRotate(root);
+            }
+            // Right Left Case
+            if (balance < -1 && getBalance(root->right) > 0)
+            {
+                root->right = rightRotate(root->right);
+                return leftRotate(root);
+            }
+            return root;
+
+        }
 
 };
 
